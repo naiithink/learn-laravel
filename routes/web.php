@@ -21,7 +21,7 @@ Route::get('/', function () {
     $files = File::files(resource_path("posts/"));
     $posts = [];
 
-    $posts = array_map(function ($file) {
+    $posts = collect($files)->map(function ($file) {
         $document = YamlFrontMatter::parseFile($file);
 
         return new Post(
@@ -31,7 +31,7 @@ Route::get('/', function () {
             $document->body(),
             $document->slug
         );
-    }, $files);
+    });
 
     return view('posts', [
         'posts' => $posts
