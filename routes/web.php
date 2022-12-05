@@ -21,34 +21,21 @@ Route::get('/', function () {
     $files = File::files(resource_path("posts/"));
     $posts = [];
 
-    foreach ($files as $file) {
-        // array_push($foo: array, $val: mixed);
-        // is effectively like:
-        // $foo[] = $val;
+    $posts = array_map(function ($file) {
         $document = YamlFrontMatter::parseFile($file);
 
-        $posts[] = new Post(
+        return new Post(
             $document->title,
             $document->excerpt,
             $document->date,
             $document->body(),
             $document->slug
         );
-    }
+    }, $files);
 
     return view('posts', [
         'posts' => $posts
     ]);
-
-    // $document = YamlFrontMatter::parseFile(
-    //     resource_path('posts/my-fourth-post.html')
-    // );
-
-    // ddd($document->matter('excerpt'));
-
-    // return view('posts', [
-    //     'posts' => Post::all()
-    // ]);
 });
 
 // Find a post by its slug and pass it to a view called "post"
