@@ -7,9 +7,30 @@ use Illuminate\Support\Facades\File;
 
 class Post
 {
+    public $title;
+
+    public $excerpt;
+
+    public $date;
+
+    public $body;
+
+    public $slug;
+
+    public function __construct($title, $excerpt, $date, $body, $slug)
+    {
+        $this->title = $title;
+        $this->excerpt = $excerpt;
+        $this->date = $date;
+        $this->body = $body;
+        $this->slug = $slug;
+    }
+
     public static function all()
     {
-        return File::files(resource_path('posts/'));
+        $files = File::files(resource_path("posts/"));
+
+        return array_map(fn($file) => $file->getContents(), $files);
     }
 
     public static function find($slug)
@@ -22,6 +43,6 @@ class Post
             throw new ModelNotFoundException();
         }
 
-        return cache()->remember("posts.{$slug}", 1, fn() => file_get_contents($path));
+        return cache()->remember("posts.{$slug}", 1200, fn() => file_get_contents($path));
     }
 }
