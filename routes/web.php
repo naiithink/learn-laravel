@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\Post;
+use App\Models\BlogPost;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
 use League\CommonMark\Extension\FrontMatter\Data\LibYamlFrontMatterParser;
@@ -19,13 +19,14 @@ use Spatie\YamlFrontMatter\YamlFrontMatter;
 
 Route::get('/', function () {
     return view('posts', [
-        'posts' => Post::all()
+        'posts' => BlogPost::all()
     ]);
 });
 
-// Find a post by its slug and pass it to a view called "post"
-Route::get('posts/{post}', function ($slug) {
+                       // BlogPost::where('slug', $post)->firstOrFail()
+// Route::get('posts/{post:slug}', function (BlogPost $post) {
+Route::get('posts/{post}', function (BlogPost $post) {
     return view('post', [
-        'post' => Post::find($slug)
+        'post' => $post
     ]);
-})->where('post', '[A-z_\-]+');
+});
